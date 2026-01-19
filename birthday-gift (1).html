@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎁 Birthday Gift Box</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center; 
+            perspective: 1000px;
+        }
+
+        .instruction {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .gift-box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-box:hover {
+            transform: scale(1.05);
+        }
+
+        .box-body {
+            position: absolute;
+            width: 200px;
+            height: 180px;
+            bottom: 0;
+            background: linear-gradient(145deg, #ff6b6b, #ee5a5a);
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .box-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(145deg, #ffd93d, #f0c419);
+        }
+
+        .box-body::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(145deg, #ffd93d, #f0c419);
+        }
+
+        .box-lid {
+            position: absolute;
+            width: 220px;
+            height: 50px;
+            top: 0;
+            left: -10px;
+            background: linear-gradient(145deg, #ff6b6b, #ee5a5a);
+            border-radius: 10px 10px 0 0;
+            transform-origin: bottom;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+        }
+
+        .box-lid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(145deg, #ffd93d, #f0c419);
+        }
+
+        .ribbon-bow {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+        }
+
+        .bow-left, .bow-right {
+            position: absolute;
+            width: 50px;
+            height: 30px;
+            background: linear-gradient(145deg, #ffd93d, #f0c419);
+            border-radius: 50% 50% 50% 50%;
+            top: 10px;
+        }
+
+        .bow-left {
+            left: -40px;
+            transform: rotate(-30deg);
+        }
+
+        .bow-right {
+            right: -40px;
+            transform: rotate(30deg);
+        }
+
+        .bow-center {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(145deg, #ffd93d, #f0c419);
+            border-radius: 50%;
+            left: 50%;
+            top: 15px;
+            transform: translateX(-50%);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Opened state */
+        .gift-box.opened .box-lid {
+            transform: rotateX(-120deg) translateY(-30px);
+        }
+
+        .gift-box.opened .ribbon-bow {
+            animation: flyAway 0.8s forwards;
+        }
+
+        @keyframes flyAway {
+            to {
+                transform: translateX(-50%) translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Surprise content */
+        .surprise {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition-delay: 0.4s;
+            z-index: 5;
+        }
+
+        .gift-box.opened .surprise {
+            transform: translateX(-50%) translateY(-100px) scale(1);
+            opacity: 1;
+        }
+
+        .surprise-content {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            min-width: 280px;
+        }
+
+        .surprise-emoji {
+            font-size: 4rem;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .surprise-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #764ba2, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .surprise-message {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            top: -10px;
+            width: 15px;
+            height: 15px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .gift-box.opened ~ .confetti {
+            animation: confetti-fall 3s forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* Sparkles */
+        .sparkles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .gift-box.opened .sparkles {
+            opacity: 1;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd93d;
+            border-radius: 50%;
+            animation: sparkle 1s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .sparkle:nth-child(1) { top: -20px; left: 20%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { top: -30px; left: 50%; animation-delay: 0.2s; }
+        .sparkle:nth-child(3) { top: -20px; left: 80%; animation-delay: 0.4s; }
+        .sparkle:nth-child(4) { top: 0; left: 90%; animation-delay: 0.6s; }
+        .sparkle:nth-child(5) { top: 0; left: 10%; animation-delay: 0.8s; }
+
+        /* Reset button */
+        .reset-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            font-size: 1rem;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .reset-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .reset-btn:hover {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Edit Modal */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .edit-modal.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .edit-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .edit-modal.visible .edit-panel {
+            transform: scale(1);
+        }
+
+        .edit-panel h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .edit-group {
+            margin-bottom: 15px;
+        }
+
+        .edit-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .edit-group input,
+        .edit-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .edit-group input:focus,
+        .edit-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .edit-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .edit-buttons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .cancel-btn {
+            background: #eee;
+            color: #666;
+        }
+
+        .cancel-btn:hover {
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p class="instruction" style="opacity: 0;">🎈 Click the gift box! 🎈</p>
+        
+        <div class="gift-box" id="giftBox">
+            <div class="box-lid">
+                <div class="ribbon-bow">
+                    <div class="bow-left"></div>
+                    <div class="bow-right"></div>
+                    <div class="bow-center"></div>
+                </div>
+            </div>
+            <div class="box-body"></div>
+            
+            <div class="surprise">
+                <div class="surprise-content">
+                    <div class="surprise-emoji">🖕</div>
+                    <div class="surprise-text">Ane Pala Yanna Ubata Mona Thagida ?</div>
+                    <div class="surprise-message">Nida Ganin</div>
+                </div>
+            </div>
+
+            <div class="sparkles">
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+                <div class="sparkle"></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-btn visible" id="resetBtn" fdprocessedid="1em24">🔄 Open Again</button>
+
+    <!-- Edit Modal -->
+    <div class="edit-modal" id="editModal">
+        <div class="edit-panel">
+            <h2>✏️ Edit Your Message</h2>
+            <div class="edit-group">
+                <label for="editEmoji">Emoji</label>
+                <input type="text" id="editEmoji" placeholder="🎂" fdprocessedid="37k699">
+            </div>
+            <div class="edit-group">
+                <label for="editTitle">Title</label>
+                <input type="text" id="editTitle" placeholder="Happy Birthday!" fdprocessedid="3e2io">
+            </div>
+            <div class="edit-group">
+                <label for="editMessage">Message</label>
+                <textarea id="editMessage" placeholder="Wishing you an amazing day!"></textarea>
+            </div>
+            <div class="edit-buttons">
+                <button class="cancel-btn" id="cancelEdit" fdprocessedid="aadioe">Cancel</button>
+                <button class="save-btn" id="saveEdit" fdprocessedid="cs85c2">💾 Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const giftBox = document.getElementById('giftBox');
+        const resetBtn = document.getElementById('resetBtn');
+        const instruction = document.querySelector('.instruction');
+
+        // Confetti colors
+        const colors = ['#ff6b6b', '#ffd93d', '#667eea', '#764ba2', '#4ecdc4', '#ff9ff3'];
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                // Random shapes
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                } else {
+                    confetti.style.borderRadius = '0';
+                }
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => confetti.remove(), 4000);
+            }
+        }
+
+        function openGift() {
+            if (!giftBox.classList.contains('opened')) {
+                giftBox.classList.add('opened');
+                instruction.style.opacity = '0';
+                createConfetti();
+                
+                setTimeout(() => {
+                    resetBtn.classList.add('visible');
+                }, 1000);
+            }
+        }
+
+        function resetGift() {
+            giftBox.classList.remove('opened');
+            resetBtn.classList.remove('visible');
+            instruction.style.opacity = '1';
+        }
+
+        giftBox.addEventListener('click', openGift);
+        resetBtn.addEventListener('click', resetGift);
+
+        // Edit functionality
+        const editModal = document.getElementById('editModal');
+        const editEmoji = document.getElementById('editEmoji');
+        const editTitle = document.getElementById('editTitle');
+        const editMessage = document.getElementById('editMessage');
+        const saveEdit = document.getElementById('saveEdit');
+        const cancelEdit = document.getElementById('cancelEdit');
+        const surpriseEmoji = document.querySelector('.surprise-emoji');
+        const surpriseText = document.querySelector('.surprise-text');
+        const surpriseMessage = document.querySelector('.surprise-message');
+
+        // Open edit modal on Ctrl+Click
+        giftBox.addEventListener('click', function(e) {
+            if (e.ctrlKey) {
+                e.stopPropagation();
+                // Populate fields with current content
+                editEmoji.value = surpriseEmoji.textContent;
+                editTitle.value = surpriseText.textContent;
+                editMessage.value = surpriseMessage.textContent;
+                editModal.classList.add('visible');
+            }
+        });
+
+        // Save edits - download updated HTML file
+        saveEdit.addEventListener('click', function() {
+            const newEmoji = editEmoji.value || '🎂';
+            const newTitle = editTitle.value || 'Happy Birthday!';
+            const newMessage = editMessage.value || 'Wishing you an amazing day filled with joy! 🎉';
+            
+            // Update the display
+            surpriseEmoji.textContent = newEmoji;
+            surpriseText.textContent = newTitle;
+            surpriseMessage.textContent = newMessage;
+            
+            // Close modal first before capturing HTML
+            editModal.classList.remove('visible');
+            
+            // Get the current HTML and update the content
+            let htmlContent = document.documentElement.outerHTML;
+            
+            // Create a temporary element to parse and update
+            const parser = new DOMParser();
+            const doc = parser.parseFromString('<!DOCTYPE html>' + htmlContent, 'text/html');
+            
+            doc.querySelector('.surprise-emoji').textContent = newEmoji;
+            doc.querySelector('.surprise-text').textContent = newTitle;
+            doc.querySelector('.surprise-message').textContent = newMessage;
+            
+            // Make sure modal is not visible in the saved file
+            doc.querySelector('.edit-modal').classList.remove('visible');
+            
+            // Make sure gift box is closed in the saved file
+            doc.querySelector('.gift-box').classList.remove('opened');
+            
+            // Make sure reset button is hidden in the saved file
+            doc.querySelector('.reset-btn').classList.remove('visible');
+            
+            // Get the updated HTML
+            const updatedHTML = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+            
+            // Download the file
+            const blob = new Blob([updatedHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'birthday-gift.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('✅ File downloaded! Replace your old file with this one and push to Git.');
+        });
+
+        // Cancel edit
+        cancelEdit.addEventListener('click', function() {
+            editModal.classList.remove('visible');
+        });
+
+        // Close modal on outside click
+        editModal.addEventListener('click', function(e) {
+            if (e.target === editModal) {
+                editModal.classList.remove('visible');
+            }
+        });
+    </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+<span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span><!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span></body></html>
